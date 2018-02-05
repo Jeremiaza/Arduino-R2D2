@@ -1,0 +1,35 @@
+const int X_pin = 0;
+const int Y_pin = 1;
+const int M1 = 4; // moottori 1 suunta
+const int S1 = 3; // moottori 1 nopeus
+int val;
+#include <VarSpeedServo.h> // Variable Servo Speed-kirjasto netistä
+VarSpeedServo servo;
+
+void setup() {
+  servo.attach(9);
+  pinMode(M1, OUTPUT);
+  pinMode(S1, OUTPUT);
+  Serial.begin(115200);
+}
+
+void loop() {
+  val = analogRead(X_pin); // katsoo ohjaimen X-suunnan paikan  
+  val = map(val, 0, 1023, 0, 180); // vaihdetaan ohjaimen 0-1023 luvut 0-180, mikä sopii servolle
+  servo.write(val, 40); // nopeus 40                 
+  delay(1);
+  if (analogRead(Y_pin) >= 475 && analogRead(Y_pin) <= 575) { // katsoo Y-suunnan 
+    analogWrite(S1, 0);
+    delay(1);
+    }
+  if (analogRead(Y_pin) > 575) {
+    digitalWrite(M1, HIGH);
+    analogWrite(S1, 75);
+    delay(1);
+    }
+  if (analogRead(Y_pin) < 475) {
+    digitalWrite(M1, LOW);
+    analogWrite(S1, 90);
+    delay(1);
+    }
+} 
